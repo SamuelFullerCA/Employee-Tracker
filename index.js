@@ -166,130 +166,56 @@ function mainLogic(data) {
 
 
 
-
+                //WORK IN PROGRESS
     }else if(data.action ==='Update Employee Role'){
-        
-        let roleArray = []
-        employees_db.query('SELECT role.title AS title, id AS role_id FROM role', (err, {rows}) => {
-            for (let i = 0; i < rows.length; i++){
-                roleArray.push(rows[i].title)
-            }
-        })
-
         let idArray = []
         let employeeArray = []
-        // let idArray
+        let roleArray = []
+
         employees_db.query('SELECT employee.first_name AS first_name, employee.last_name AS last_name, employee.id AS id FROM employee', (err, {rows}) => {
         for (let i = 0; i < rows.length; i++){
             let arrayItem = `${rows[i].last_name}, ${rows[i].first_name}`
             employeeArray.push(arrayItem)
             idArray.push(rows[i])
         }
+        employees_db.query('SELECT role.title AS title, id AS role_id FROM role', (err, {rows}) => {
+            for (let i = 0; i < rows.length; i++){
+                roleArray.push(rows[i].title)
+            }
         })
         inquirer
-            .prompt([
-                {
-                    type: 'list',
-                    name: 'firstChoice',
-                    message: 'Add a role and update, or update from existing roles?',
-                    choices: ['Add a role, then update the employee', 'update employee role from existing roles']
+        .prompt([
+            {
+                type: 'list',
+                name: 'EmployeeUpdate',
+                message: 'Which employee do you want to update?',
+                choices: employeeArray
+            },
+            {
+                type: 'list',
+                name: 'roleUpdate',
+                message: 'What is the new role?',
+                choices: roleArray
+            }
+        ])
+        .then((data) => {
+            let employeeRoleId
+            let employeeId
+            for (let j = 0; j < idArray.length; j++){
+                if(`${idArray[j].last_name}, ${idArray[j].first_name}`.includes(data.EmployeeUpdate)){
+                    employeeId = idArray[j].id
+                    employees_db.query('SELECT id FROM role WHERE role.title = $1', [data.roleUpdate], (err, {rows}) => {
+                        employeeRoleId = rows[0].id
+                        employees_db.query('UPDATE employee SET role_id = $1 WHERE id = $2', [employeeRoleId, employeeId])
+                        loopPrompt()
+                    })
                 }
-            ])
-            .then((data) => {
-                if (data.firstChoice === 'Add a role, then update the employee'){
-
-                    addRole();
-
-                    inquirer
-                        .prompt([
-                            {
-                                type: 'list',
-                                name: 'EmployeeUpdate',
-                                message: 'for which employee do you want to give this role?',
-                                choices: employeeArray
-                            },
-                        ])
-                        .then((data) => {
-                            let employeeRoleId
-                            //need to set based off employee id and change rold_id ahhhhh
-                            for (let j = 0; j < employeeArray.length; j++){
-                                    if(employeeArray[j].includes(data.EmployeeUpdate)){
-                                        employees_db.query('SELECT id, title FROM role WHERE role.title = $1', [roleArray[j]], (err, {rows}) => {
-                                            employeeRoleId = rows[0].id
-                                            employees_db.query('UPDATE employee SET role_id = $1', [employeeRoleId])
-                                            loopPrompt()
-                                        })
-                                    }
-                            }
-                        })
-                            
-                }else{
-                    inquirer
-                        .prompt([
-                            {
-                                type: 'list',
-                                name: 'EmployeeUpdate',
-                                message: 'for which employee do you want to give this role?',
-                                choices: employeeArray
-                            },
-                            {
-                                type: 'list',
-                                name: 'roleUpdate',
-                                message: 'What is the new role?',
-                                choices: roleArray
-                            }
-                        ])
-                        .then((data) => {
-                            let employeeRoleId
-                            let employeeId
-                            for (let j = 0; j < idArray.length; j++){
-                                if(employeeArray[j].includes(data.EmployeeUpdate)){
-                                    employeeId = j+1
-                                    employees_db.query('SELECT id FROM role WHERE role.title = $1', [data.roleUpdate], (err, {rows}) => {
-                                        console.log(rows, 'zero')
-                                        employeeRoleId = rows[0].id
-                                        console.log(employeeRoleId, 'one')
-                                        console.log(employeeId, 'two')
-                                        employees_db.query('UPDATE employee SET role_id = $1 WHERE id = $2', [employeeRoleId, employeeId])
-                                        loopPrompt()
-                                    })
-                                }
-                            }
-                        })
+            }
+        })
+        })
 
                 }
-            })
-
-                
-
-
-            //     {
-            //         type: 'input',
-            //         name: 'roleUpdate',
-            //         message: 'What is the new role?',
-            //     },
-            //     {
-            //         type: 'list',
-            //         name: 'EmployeeUpdate',
-            //         message: 'for which employee do you want to give this role?',
-            //         choices: employeeArray
-            //     },
-            // ])
-            // .then((data) => {
-                // let departId;
-                // for (let j = 0; j < employeeArray.length; j++){
-                //     if(employeeArray[j].includes(data.roleDepart)){
-                //         employees_db.query('SELECT id, name FROM department WHERE department.name = $1', [employeeArray[j]], (err, {rows}) => {
-                //             departId = rows[0].id
-                //             employees_db.query('INSERT INTO role (title, salary, department_id) VALUES ($1, $2, $3)', [data.newRole, data.newSalary, departId])
-                //             console.log(`${data.newRole} role added!`)
-                //             loopPrompt()
-                //         })
-                //     }
-                // }   
-            // })
-    }
-}
+            }
 
 
 
