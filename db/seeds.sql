@@ -1,5 +1,5 @@
 INSERT INTO department (name)
-VALUES ('Sales'), ('Supervisor'), ('Warhouse'), ('Admin');
+VALUES ('Sales'), ('Supervisor'), ('Warehouse'), ('Admin');
 
 INSERT INTO role (title, salary, department_id)
 VALUES 
@@ -17,6 +17,19 @@ VALUES
 INSERT INTO employee (first_name, last_name, role_id)
 VALUES 
     ('Samuel', 'Fuller', 007),
-    ('Ricky' 'Meldina', 002),
-    ()
+    ('Ricky', 'Meldina', 002),
+    ('Luis', 'Tuttle', 007),
+    ('Paul', 'Tenson', 004),
+    ('Richard', 'smith', 004),
+    ('Tim', 'Dic', 006),
+    ('Carissa', 'Nonne', 003),
+    ('Isaiah', 'Bonele', 008),
+    ('Chris', 'Benet', 010),
+    ('Leo', 'panz', 009),
+    ('Rofit', 'Ramaswuamy', 001),
+    ('Justin', 'Time', 001),
+    ('Pier', 'Gordo', 005);
+
+
+
 
