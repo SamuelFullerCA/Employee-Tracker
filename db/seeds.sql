@@ -12,23 +12,25 @@ VALUES
     ('Shift Lead', 40000, 002),
     ('Keyholder', 35000, 002),
     ('Seasonal Sales', 10000, 001),
-    ('Season WH', 10000, 003);
+    ('Season WH', 10000, 003),
+    ('Sales Manager', 85000, 004);
 
-INSERT INTO employee (first_name, last_name, role_id)
+INSERT INTO employee (first_name, last_name, role_id, manager_id)
 VALUES 
-    ('Samuel', 'Fuller', 007),
-    ('Ricky', 'Meldina', 002),
-    ('Luis', 'Tuttle', 007),
-    ('Paul', 'Tenson', 004),
-    ('Richard', 'smith', 004),
-    ('Tim', 'Dic', 006),
-    ('Carissa', 'Nonne', 003),
-    ('Isaiah', 'Bonele', 008),
-    ('Chris', 'Benet', 010),
-    ('Leo', 'panz', 009),
-    ('Rofit', 'Ramaswuamy', 001),
-    ('Justin', 'Time', 001),
-    ('Pier', 'Gordo', 005);
+    ('Samuel', 'Fuller', 007, 004),
+    ('Ricky', 'Meldina', 002, 002),
+    ('Luis', 'Tuttle', 007, 004),
+    ('Paul', 'Tenson', 004, 002),
+    ('Richard', 'smith', 011, 002),
+    ('Tim', 'Dic', 006, 004),
+    ('Carissa', 'Nonne', 005, 005),
+    ('Isaiah', 'Bonele', 008, 004),
+    ('Chris', 'Benet', 010, 004),
+    ('Leo', 'panz', 009, 004),
+    ('Rofit', 'Ramaswuamy', 001, 005),
+    ('Justin', 'Time', 001, 005),
+    ('Pier', 'Gordo', 005, 004);
+
 
 
 

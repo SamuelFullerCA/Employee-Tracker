@@ -68,9 +68,11 @@ function loopPrompt() {
 function mainLogic(data) {
     employees_db.connect()
 
+    // SELECT employee.id AS id, first_name AS First_Name, last_name AS Last_Name, manager_id AS manager FROM employee JOIN employee ON employee.manager_id = employee.id
+
     //executles if the user selects 'View All Employees'
     if(data.action === 'View All Employees'){
-        employees_db.query('SELECT employee.id AS id, first_name AS First_Name, last_name AS Last_Name, role.title AS Job FROM employee JOIN role ON employee.role_id = role.id', (err, {rows}) => {
+        employees_db.query('SELECT employee.id AS employee_id, first_name AS First_Name, last_name AS Last_Name, role.title AS role, (employee.manager_id) AS manager_id FROM employee JOIN role ON employee.role_id = role.id', (err, {rows}) => {
             if (err) {
               console.log(err);
             }
@@ -90,7 +92,7 @@ function mainLogic(data) {
 
     //executles if the user selects 'View All Departments'
     }else if(data.action === 'View All Departments'){
-        employees_db.query('SELECT name AS Department FROM department', (err, {rows}) => {
+        employees_db.query('SELECT name AS Department, id AS Department_ID FROM department', (err, {rows}) => {
             if (err) {
               console.log(err);
             }
