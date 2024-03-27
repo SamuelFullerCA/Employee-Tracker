@@ -6,9 +6,9 @@
 
 ## Description
 
-Large Companies can strugle to keep track of various employees,  roles, and departments. This application aims to simplify navagation and editing of a database that condenses all the above information.
+Large companies often strugle to keep track of various employees,  roles, and departments. This application aims to simplify navagation and editing of a database that condenses all the above information.
 
-## Table of Contents (Optional)
+## Table of Contents
 
 - [Installation](#installation)
 - [Usage](#usage)
@@ -16,15 +16,15 @@ Large Companies can strugle to keep track of various employees,  roles, and depa
 - [Questions](#questions)
 
 ## Installation
-*Note 'postgress' and 'password' are the default PostgressSQL username and password, if the user has a different username or password, then the 'postgres' and 'password' in step 2 must be adjusted accordingly. Aditionally the user must change the values in index.js lines 36 and 37, respectively.
+*Note 'postgres' and 'password' are the default PostgresSQL username and password, if the user has a different username or password, then the 'postgres' and 'password' in step 2 must be adjusted accordingly. Aditionally the user must change the values in index.js lines 36 and 37, respectively.
 
-1. Dowload, copy, or clone the code to your local machiene through github. When the code is launched in vscode, or another approperate IDE. 
+1. Dowload, copy, or clone the code to your local machine through github and open in vscode, or another approperate IDE. 
 
 2. Right click on 'index.js' and select 'Open In Integrated Terminal', then run the command ```npm install``` to install all required node files. 
 
-3. The user must then launch Postgress by running the command: ```psql -U postgres```, in the terminal then running the command: ```password```. 
+3. The user must then launch Postgres by running the command: ```psql -U postgres```, in the terminal then running the command: ```password```. 
 
-4. Continue in the terminal by running the command: ```\i db/schema.sql```, and then the command: ```\i db/seeds.sql```, to initialize and seed their database, then run the command: ```\q```, to exit PostressSQL.
+4. Continue in the terminal by running the command: ```\i db/schema.sql```, and then the command: ```\i db/seeds.sql```, to initialize and seed their database, then run the command: ```\q```, to exit PostresSQL.
 
 5. Finally the user can run the command: ```node index.js```, to launch the application.
 
