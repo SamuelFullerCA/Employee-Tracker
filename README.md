@@ -34,6 +34,8 @@ Large Companies can strugle to keep track of various employees,  roles, and depa
 
 ## Usage
 
+Video demonstating usage:  https://www.youtube.com/watch?v=PSRTlz_7cDY
+
 The User is initially prompted with various actions they can perform in the console. Using arrowkeys to navagate and enter key to select they can run any of the actions. After the selected action is complete the user is prompted if they want to perform more actions, selection yes will again show the initial list of actions, selecting no will exit the application.
 
 <p align="center">

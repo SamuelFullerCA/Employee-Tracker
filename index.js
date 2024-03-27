@@ -161,10 +161,12 @@ function mainLogic(data) {
                             //once the match is found it pulls role data from the database using the matching title in roleArray
                             employees_db.query('SELECT role.id, role.title FROM role WHERE role.title = $1', [roleArray[j]], (err, {rows}) => {
                                 jobId = rows[0].id
-                                //inserts the new employee into the database with the role.id being pulled from the above query.
+                                //finds at what index in managerArray matches the users selected option
+                                //this is done to ensure the correct manager id is pulled and used
                                 for (let k = 0; k < managerArray.length; k++){
                                     if(`${idPingArray[k].last_name}, ${idPingArray[k].first_name}`.includes(data.manager)){
                                         managerId = idPingArray[k].id
+                                        //inserts the new employee into the database with the role.id and manager_id being pulled from the above query and array respectively.
                                         employees_db.query('INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ($1, $2, $3, $4)', [data.firstName, data.lastName, jobId, managerId])
                                         console.log(`Employee, ${data.firstName} ${data.lastName}, added!`)
                                         //runs the loop prompt
@@ -255,17 +257,20 @@ function mainLogic(data) {
         let employeeArray = []
         let roleArray = []
 
+        //creates an array of employees
         employees_db.query('SELECT employee.first_name AS first_name, employee.last_name AS last_name, employee.id AS id FROM employee', (err, {rows}) => {
             for (let i = 0; i < rows.length; i++){
                 let arrayItem = `${rows[i].last_name}, ${rows[i].first_name}`
                 employeeArray.push(arrayItem)
                 idArray.push(rows[i])
             }
+            //creates an array of roles
             employees_db.query('SELECT role.title AS title, id AS role_id FROM role', (err, {rows}) => {
                 for (let i = 0; i < rows.length; i++){
                     roleArray.push(rows[i].title)
                 }
             })
+            //prompts the user
             inquirer
             .prompt([
                 {
@@ -284,6 +289,8 @@ function mainLogic(data) {
             .then((data) => {
                 let employeeRoleId
                 let employeeId
+                //finds at what index in idArray matches the users selected option
+                //this is done to ensure the correct role id is pulled and used
                 for (let j = 0; j < idArray.length; j++){
                     if(`${idArray[j].last_name}, ${idArray[j].first_name}`.includes(data.EmployeeUpdate)){
                         employeeId = idArray[j].id
