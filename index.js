@@ -30,8 +30,6 @@ const mainPrompt = () => {
 //runs the main prompt on load
 mainPrompt()
 
-
-
 //creates the pool to extract database info from
 const employees_db = new Pool (
     {
@@ -74,10 +72,9 @@ function mainLogic(data) {
 
     //connects to the employees database
     employees_db.connect()
-    // SELECT employee.id AS id, first_name AS First_Name, last_name AS Last_Name, manager_id AS manager FROM employee JOIN employee ON employee.manager_id = employee.id
-    //executles if the user selects 'View All Employees'
+    // (SELECT e.first_name ||' '|| e.last_name employee, m.last_name ||' '|| m.first_name manager FROM employee e INNER JOIN employee m ON m.id = e.manager_id)
     if(data.action === 'View All Employees'){
-        employees_db.query('SELECT employee.id AS employee_id, first_name AS First_Name, last_name AS Last_Name, role.title AS role, (employee.manager_id) AS manager_id FROM employee JOIN role ON employee.role_id = role.id', (err, {rows}) => {
+        employees_db.query("SELECT e.id AS employee_id, e.first_name, e.last_name, r.title AS job_title, r.salary AS salary, d.name AS department, m.last_name ||', '|| m.first_name manager FROM employee e INNER JOIN employee m ON m.id = e.manager_id INNER JOIN role r ON e.role_id = r.id INNER JOIN department d ON r.department_id = d.id", (err, {rows}) => {
             if (err) {
               console.log(err);
             }
@@ -99,7 +96,7 @@ function mainLogic(data) {
 
     //executles if the user selects 'View All Departments'
     }else if(data.action === 'View All Departments'){
-        employees_db.query('SELECT name AS Department, id AS Department_ID FROM department', (err, {rows}) => {
+        employees_db.query('SELECT name AS Department_Name, id AS Department_ID FROM department', (err, {rows}) => {
             if (err) {
               console.log(err);
             }
@@ -112,11 +109,20 @@ function mainLogic(data) {
     }else if(data.action === 'Add Employee'){
         //creates an array called roleArray
         let roleArray = []
+        let managerArray = []
+        let idPingArray = []
         //extracts data from the role table in the database
         employees_db.query('SELECT role.title AS title, id AS role_id FROM role', (err, {rows}) => {
             //pulls all the role titles from the above database query and pushes them into roleArray
             for (let i = 0; i < rows.length; i++){
                 roleArray.push(rows[i].title)
+            }
+        })
+        employees_db.query('SELECT employee.first_name AS first_name, employee.last_name AS last_name, employee.id AS id FROM employee', (err, {rows}) => {
+            for (let i = 0; i < rows.length; i++){
+                let arrayItem = `${rows[i].last_name}, ${rows[i].first_name}`
+                managerArray.push(arrayItem)
+                idPingArray.push(rows[i])
             }
         })
         //prompt for getting user inputs
@@ -137,10 +143,17 @@ function mainLogic(data) {
                     name: 'job',
                     message: 'What is the employees role?',
                     choices: roleArray
+                },
+                {
+                    type: 'list',
+                    name: 'manager',
+                    message: 'Who is the employees manager?',
+                    choices: managerArray
                 }
                 ])
                 .then((data) => {
                     let jobId;
+                    let managerId;
                     //finds at what index in roleArray matches the users selected option
                     //this is done to ensure the correct role id is pulled and used
                     for (let j = 0; j < roleArray.length; j++){
@@ -149,10 +162,15 @@ function mainLogic(data) {
                             employees_db.query('SELECT role.id, role.title FROM role WHERE role.title = $1', [roleArray[j]], (err, {rows}) => {
                                 jobId = rows[0].id
                                 //inserts the new employee into the database with the role.id being pulled from the above query.
-                                employees_db.query('INSERT INTO employee (first_name, last_name, role_id) VALUES ($1, $2, $3)', [data.firstName, data.lastName, jobId])
-                                console.log(`Employee, ${data.firstName} ${data.lastName}, added!`)
-                                //runs the loop prompt
-                                loopPrompt()
+                                for (let k = 0; k < managerArray.length; k++){
+                                    if(`${idPingArray[k].last_name}, ${idPingArray[k].first_name}`.includes(data.manager)){
+                                        managerId = idPingArray[k].id
+                                        employees_db.query('INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ($1, $2, $3, $4)', [data.firstName, data.lastName, jobId, managerId])
+                                        console.log(`Employee, ${data.firstName} ${data.lastName}, added!`)
+                                        //runs the loop prompt
+                                        loopPrompt()
+                                    }
+                                }
                             })
                         }
                     }   
@@ -230,8 +248,7 @@ function mainLogic(data) {
                     //runs the loop prompt
                     loopPrompt()
                 })
-                
-                //WORK IN PROGRESS
+
     //executes when the user selects 'Update Employee Role'
     }else if(data.action ==='Update Employee Role'){
         let idArray = []
